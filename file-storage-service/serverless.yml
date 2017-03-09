@@ -1,13 +1,15 @@
-service: fetch-file-and-store-in-s3
+service: image-service
 
 custom:
-  bucket: user-profile-images-no-one-has-this-ever-please
+  bucket: user-profile-images-lalalalaxxx
 
 provider:
   name: aws
   runtime: nodejs4.3
   stage: dev
   region: us-west-1
+  environment:
+    BUCKET: ${self:custom.bucket}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,11 +24,37 @@ functions:
           path: save-image
           method: post
           cors: true
-    environment:
-      BUCKET: ${self:custom.bucket}
   notify:
     handler: handler.notify
+    # handler: image-resize.resizeImage
     events:
       - s3:
           bucket: ${self:custom.bucket}
           event: s3:ObjectCreated:*
+  # resizeImage:
+  #   handler: image-resize.resizeImage
+  #   events:
+  #     - http:
+  #         path: resize-image
+  #         method: post
+  #         cors: true
+
+# We need an additional bucket without a listener
+resources:
+  Resources:
+    UploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucket}-output
+        AccessControl: PublicRead
+        CorsConfiguration:
+          CorsRules:
+          - AllowedMethods:
+            - GET
+            - PUT
+            - POST
+            - HEAD
+            AllowedOrigins:
+            - "*"
+            AllowedHeaders:
+            - "*"

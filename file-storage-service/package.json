@@ -5,7 +5,9 @@
   "author": "Bozhao Yu",
   "license": "MIT",
   "dependencies": {
+    "async": "^2.1.5",
     "aws-sdk": "^2.7.9",
-    "node-fetch": "^1.6.3"
+    "gm": "^1.23.0",
+    "node-fetch": "^1.6.3",
   }
 }

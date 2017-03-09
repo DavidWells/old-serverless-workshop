@@ -1,9 +1,9 @@
 'use strict';
 
 const fetch = require('node-fetch');
-const AWS = require('aws-sdk'); // eslint-disable-line import/no-extraneous-dependencies
-
+const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
+const BUCKET = process.env.BUCKET;
 
 module.exports.save = (event, context, callback) => {
   console.log(event)
@@ -21,11 +21,11 @@ module.exports.save = (event, context, callback) => {
     ))
     .then(() => {
       callback(null, {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true
-      }),
-    });
+        statusCode: 200,
+        body: JSON.stringify({
+          success: true
+        }),
+      });
     })
     .catch((error) => {
       callback(error, null);
@@ -34,4 +34,6 @@ module.exports.save = (event, context, callback) => {
 
 module.exports.notify = (event, context, callback) => {
   console.log('Notify Admin of new image')
+  console.log(event)
+  console.log(context)
 };
