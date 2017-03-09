@@ -1,0 +1,32 @@
+service: fetch-file-and-store-in-s3
+
+custom:
+  bucket: user-profile-images-no-one-has-this-ever-please
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  stage: dev
+  region: us-west-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
+
+functions:
+  save:
+    handler: handler.save
+    events:
+      - http:
+          path: save-image
+          method: post
+          cors: true
+    environment:
+      BUCKET: ${self:custom.bucket}
+  notify:
+    handler: handler.notify
+    events:
+      - s3:
+          bucket: ${self:custom.bucket}
+          event: s3:ObjectCreated:*
